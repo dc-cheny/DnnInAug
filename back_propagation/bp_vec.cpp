@@ -22,7 +22,7 @@ int main() {
     int H = 100;
     int D_out = 10;
     // 定义学习率
-    double learning_rate = 1e-5;
+    double learning_rate = 1e-9;
 
     vector<vector<double> > x = generate_randmat(N, D_in); // 60 * 1000
     vector<vector<double> > y = generate_randmat(N, D_out); // 60 * 10
@@ -32,6 +32,8 @@ int main() {
     // std::cout << r[0][0] << endl;
     for (int iter=0;iter<5000;iter++) {
         // forward propagation
+        // cout << w1[0][0] << endl;
+        // cout << endl;
         vector<vector<double> > h = vec_dot(x, w1);
         // relu
         for (int _i=0;_i<h.size();_i++) {
@@ -39,10 +41,14 @@ int main() {
                 if (h[_i][_j] < 0) {
                     h[_i][_j] = 0;
                 }
+                // cout << h[_i][_j] << endl;
             }
         }
+        // cout << "--------------" << endl;
+        // cout << h[0][0] << endl;
         vector<vector<double> > y_pred = vec_dot(h, w2);
         // calc loss
+        // cout << y_pred[0][0] << y[0][0] << endl;
         double loss = mse_loss(y_pred, y);
         if (iter % 10 == double(0)) {
             cout << "第" << iter << "轮：loss为" << loss << endl;
@@ -63,6 +69,7 @@ int main() {
 
         // 更新参数
         w1 = vec_minus(w1, const_dot(w1_grad, learning_rate));
+        // cout << w1[0][0] << endl;
         w2 = vec_minus(w2, const_dot(w2_grad, learning_rate));
     }
     
@@ -102,6 +109,7 @@ vector<vector<double> > vec_dot(vector<vector<double> > v1, vector<vector<double
             for (int c=0;c<v1[0].size();c++) {
                 cell += v1[i][c] * v2[c][j];
             }
+            // cout << cell << endl;
             v[i][j] = cell;
         }
     }
@@ -120,8 +128,13 @@ double mse_loss(vector<vector<double> > v1, vector<vector<double> > v2) {
     for (int i=0;i<v1.size();i++) {
         for (int j=0;j<v1[0].size();j++) {
             res += pow((v1[i][j] - v2[i][j]), 2);
+            // cout << pow((v1[i][j] - v2[i][j]), 2) << endl;
+            // cout << res << endl;
+            // cout << "--------------------" << endl;
         }
     }
+    // cout << "v1[0][0]" << v1[0][0] << '\t' << v2[0][0] << endl;
+    // cout << endl;
     return res;
 }
 
